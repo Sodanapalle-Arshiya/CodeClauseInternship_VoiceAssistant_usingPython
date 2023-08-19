@@ -1,0 +1,46 @@
+pip install SpeechRecognition gTTS pyttsx3
+
+import speech_recognition as sr
+import pyttsx3
+from gtts import gTTS
+import os
+
+def speak(text):
+    tts = gTTS(text=text, lang='en')
+    tts.save("output.mp3")
+    os.system("mpg321 output.mp3")
+
+def recognize_speech():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        audio = r.listen(source)
+        try:
+            print("Recognizing...")
+            user_input = r.recognize_google(audio)
+            print("You said:", user_input)
+            return user_input
+        except sr.UnknownValueError:
+            print("Sorry, I didn't catch that.")
+            return None
+        except sr.RequestError:
+            print("Sorry, there was an error connecting to Google.")
+            return None
+
+def main():
+    print("Voice Assistant is ready.")
+    while True:
+        user_input = recognize_speech()
+        if user_input:
+            if "hello" in user_input.lower():
+                speak("Hello! How can I help you?")
+            elif "how are you" in user_input.lower():
+                speak("I'm just a program, but I'm functioning well, thank you!")
+            elif "goodbye" in user_input.lower():
+                speak("Goodbye! Have a great day!")
+                break
+            else:
+                speak("I'm sorry, I didn't understand that.")
+
+if __name__ == "__main__":
+    main()
